@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:acs_app/AUTHENTICATION/REGISTER/LOGIC/enums.dart';
 import 'package:acs_app/AUTHENTICATION/REGISTER/LOGIC/enumsToString.dart';
 import 'package:acs_app/AUTHENTICATION/REGISTER/LOGIC/toggles.dart';
+import 'package:acs_app/DATABASE/UL/courses.dart';
 import 'package:country_pickers/country.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -57,6 +60,12 @@ class _RegisterationState extends State<Registeration> {
     
 
   ];
+   List<DropdownMenuItem<String>> _courses=[
+   DropdownMenuItem(
+              value: "LM020",
+              child: Text("Arts in Law and Accounting")
+            ),
+  ];
 
      Toggle showpassword=Toggle(init:false);
     Toggle selectGender=Toggle(init:false);
@@ -67,7 +76,40 @@ class _RegisterationState extends State<Registeration> {
 
   Country _selectedCupertinoCountry;
 
+  StreamSubscription _subscription;
+  String _course;
 
+
+@override
+    void dispose()
+    {
+      if(_subscription!=null)
+      _subscription.cancel;
+    }
+  @override
+  void initState()
+  {
+    CourseDB cdb=CourseDB();
+    cdb.getCourses(_updateCourseList).then((StreamSubscription s) => _subscription = s);
+    super.initState();
+  }
+  void _updateCourseList(Courses courses) {
+
+    setState(() {
+
+      for (Course c in courses.courses) {
+        print(c.name);
+        _courses.add(
+          DropdownMenuItem(
+              value: c.name,
+              child: Text(c.name)
+          ),
+        );
+      }
+
+
+    });
+  }
   @override
   Widget build(BuildContext context) {
  
@@ -281,6 +323,24 @@ class _RegisterationState extends State<Registeration> {
                               items:this._yearOptions ,
                             ),
                           ),
+                           ListTile(
+                            trailing: Text(""),
+                            title: DropdownButton<String>(
+                              value: _course,
+                              onChanged: (type){
+                                setState(() {
+                                  _course=type;
+                                });
+                              },
+                              items:this._courses ,
+                            ),
+                          ),
+                          RaisedButton(
+                            child: Text("Save Courses"),
+                            onPressed: (){
+                              _saveCourses();
+                            },
+                          ),
                           
                         ],
                       ),
@@ -308,4 +368,17 @@ class _RegisterationState extends State<Registeration> {
               setState(() => _selectedCupertinoCountry = country),
         );
       });
+      void _saveCourses(){
+        List<Course> courses=[
+      new Course(code: "LM121",name:"Computer Science",discipline: "Engineering",length: 4,leader: "Chris Exton"),
+      new Course(code: "LM063",name:"Technology Management",discipline: "Engineering",length: 4,leader: "Dr Alan Ryan"),
+      new Course(code: "LM076",name:"Product Design and Technology",discipline: "Engineering",length: 4,leader: "Dermot Mclnerney"),
+      new Course(code: "LM121",name:"Aeronautical Engineering",discipline: "Engineering",length: 4,leader: "Ronan O Higgins"),
+
+    ];
+    CourseDB().saveCourses(Courses(courses));
+
+
+ 
+}
 }
