@@ -1,8 +1,11 @@
 import 'package:acs_app/AUTHENTICATION/REGISTER/LOGIC/enums.dart';
 import 'package:acs_app/AUTHENTICATION/REGISTER/LOGIC/enumsToString.dart';
 import 'package:acs_app/AUTHENTICATION/REGISTER/LOGIC/toggles.dart';
+import 'package:country_pickers/country.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:country_pickers/country_pickers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -55,18 +58,20 @@ class _RegisterationState extends State<Registeration> {
 
   ];
 
-  
-  @override
-  Widget build(BuildContext context) {
- 
-    Toggle showpassword=Toggle(init:false);
+     Toggle showpassword=Toggle(init:false);
     Toggle selectGender=Toggle(init:false);
     Gender _genderGroup=Gender.MALE;
     DegreeType _degree=DegreeType.UNDERGRAD;
     CollegeYear _year=CollegeYear.FIRST;
     EnumTranslator _translator=EnumTranslator();
 
+  Country _selectedCupertinoCountry;
 
+
+  @override
+  Widget build(BuildContext context) {
+ 
+ 
     return Scaffold(
         
         body:Container(
@@ -172,7 +177,18 @@ class _RegisterationState extends State<Registeration> {
                               ),
                             )
                           ),
-                          
+                           TextFormField(
+                              decoration: InputDecoration(
+                                icon: Icon(FontAwesomeIcons.globeAfrica),
+                                labelText: "What's Your Country of Origin?",
+                                helperText: "click the flag for options",
+                                suffixIcon: IconButton(icon: Icon(Icons.flag),onPressed: (){
+                                 _openCupertinoCountryPicker();
+                              },
+
+                              ),
+                            )
+                          ),
                           Padding(padding: const EdgeInsets.all(10)),
                           Align(
                             alignment: Alignment.center,
@@ -235,9 +251,9 @@ class _RegisterationState extends State<Registeration> {
                             ),
                           ),
                           ListTile(
-                            trailing: Text(_translator.degree(_degree)),
+                            trailing: Text(""),
                             title: DropdownButton<DegreeType>(
-                              value: DegreeType.UNDERGRAD,
+                              value: _degree,
                               onChanged: (type){
                                 setState(() {
                                   _degree=type;
@@ -254,9 +270,9 @@ class _RegisterationState extends State<Registeration> {
                             ),
                           ),
                           ListTile(
-                            trailing: Text(_year.toString()),
+                            trailing: Text(""),
                             title: DropdownButton<CollegeYear>(
-                              value: CollegeYear.FIRST,
+                              value: _year,
                               onChanged: (type){
                                 setState(() {
                                   _year=type;
@@ -264,7 +280,8 @@ class _RegisterationState extends State<Registeration> {
                               },
                               items:this._yearOptions ,
                             ),
-                          )
+                          ),
+                          
                         ],
                       ),
                     )
@@ -282,4 +299,13 @@ class _RegisterationState extends State<Registeration> {
       
     );
   }
+   void _openCupertinoCountryPicker() => showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return CountryPickerCupertino(
+          pickerSheetHeight: 300.0,
+          onValuePicked: (Country country) =>
+              setState(() => _selectedCupertinoCountry = country),
+        );
+      });
 }

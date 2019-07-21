@@ -21,6 +21,9 @@ dependencies:
   cupertino_icons: ^0.1.2
   flutter_datetime_picker:
   font_awesome_flutter:
+  country_pickers:
+  firebase_database:
+  firebase_storage:
 
 dev_dependencies:
   flutter_test:
