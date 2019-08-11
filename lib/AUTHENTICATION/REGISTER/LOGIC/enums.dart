@@ -1,3 +1,4 @@
 enum Gender{MALE,FEMALE,OTHER}
+enum Relationship{SINGLE,TAKEN,OTHER}
 enum DegreeType{UNDERGRAD,MASTERS,DOCTORAL}
 enum CollegeYear{FIRST,SECOND,THIRD,FORTH,FIFTH}

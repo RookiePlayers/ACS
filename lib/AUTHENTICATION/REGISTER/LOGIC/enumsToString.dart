@@ -14,6 +14,45 @@ class EnumTranslator{
         break;
     }
   }
+   gender([Gender gender]){
+    switch (gender) {
+      case Gender.MALE:
+        return "Male";
+        break;
+        case Gender.FEMALE:
+        return "Female";
+        break;
+      default:
+        return "Male";
+        break;
+    }
+  }
+   relationship([Relationship relationship]){
+    switch (relationship) {
+      case Relationship.SINGLE:
+        return "Single";
+        break;
+        case Relationship.TAKEN:
+        return "In a Relationship";
+        break;
+      default:
+        return "Single";
+        break;
+    }
+  }
+    relationship_bool([Relationship relationship]){
+    switch (relationship) {
+      case Relationship.SINGLE:
+        return true;
+        break;
+        case Relationship.TAKEN:
+        return false;
+        break;
+      default:
+        return false;
+        break;
+    }
+  }
   collegeYear([CollegeYear year])
   {
      switch (year) {

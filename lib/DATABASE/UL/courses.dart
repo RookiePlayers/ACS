@@ -5,11 +5,11 @@ import 'package:firebase_database/firebase_database.dart';
 
 class Course
 {
-   String name;
-   String code;
-   String discipline;
-   int length;
-   String leader;
+   String name="";
+   String code="";
+   String discipline="";
+   int length=4;
+   String leader="";
   Course({this.name,this.code,this.discipline,this.length,this.leader});
   Course.fromSnapshot(DataSnapshot s):
   name=s.value['name'],
@@ -64,21 +64,21 @@ class Courses{
 class CourseDB{
   StreamSubscription _subscription;
  DatabaseReference ref=FirebaseDatabase.instance.reference();
- Future<void> saveCourses(Courses courses)
+ Future<void> saveCourses(Course course)
   async {
-     await ref.child("Courses").
-   push().set(courses.toJson());
+     await ref.child("Course").
+   push().set(course.toJson());
   }
- Future<StreamSubscription<Event>> getCourses(void onData(Courses course))async{
+ Future<StreamSubscription<Event>> getCourses(void onData(Course course))async{
       print("><><><><><><><><><><>");
 
     StreamSubscription<Event>subscription=FirebaseDatabase.instance
     .reference()
-    .child("/Courses")
+    .child("Course")
     .onChildAdded
     .listen((e){
-    print(e.snapshot.value['courses']);
-      Courses c=  Courses.fromSnapshot(e.snapshot);
+   
+      Course c=  Course.fromSnapshot(e.snapshot);
       onData(c); print(">>>>>\n$c");
     print("Comleted");
       });
@@ -97,7 +97,7 @@ class CourseCreator {
       new Course(code: "LM121",name:"Aeronautical Engineering",discipline: "Engineering",length: 4,leader: "Ronan O Higgins"),
 
     ];
-    CourseDB().saveCourses(Courses(courses));
+    //CourseDB().saveCourses(Course(courses));
   }
   
     
