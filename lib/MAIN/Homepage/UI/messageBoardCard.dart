@@ -17,20 +17,28 @@ import 'package:video_player/video_player.dart';
 
 class BoardCard extends StatefulWidget {
   final MessageBoard board;
+  final Profile uploader;
+  final Profile me;
   BoardCard({
-    this.board
+    this.board,
+    this.uploader,
+    this.me
   });
  
 
-  _BoardCardState createState() => _BoardCardState(board:board);
+  _BoardCardState createState() => _BoardCardState(board:board,currentProfile: uploader,me:me);
 }
 
 class _BoardCardState extends State<BoardCard> with SingleTickerProviderStateMixin {
   AnimationController anim_controller;
  final MessageBoard board;
-  Profile _currentProfile = Profile();
+ 
+  Profile currentProfile = Profile();
+  Profile me;
   _BoardCardState({
-    this.board
+    this.board,
+    this.currentProfile,
+    this.me
   });
  StreamSubscription _profileSubscription;
 VideoPlayerController _controller;
@@ -39,6 +47,7 @@ String video_url;
  @override
  void initState() { 
   super.initState();
+ // getProfile();
    // ProfileManager.getUser(board.uploader,_updateCurrentProfile).then((StreamSubscription s) => _profileSubscription = s);
  anim_controller=AnimationController(duration: Duration(milliseconds: 800),vsync: this);
 
@@ -58,6 +67,7 @@ String video_url;
     // TODO: implement dispose
     anim_controller.dispose();
    if(_controller!=null) _controller.dispose();
+   currentProfile=null;
     super.dispose();
   }
  void _updateCurrentProfile(Profile p)
@@ -79,12 +89,7 @@ String video_url;
   }
   
   Toggle overlay_toggler=new Toggle(init: false);
-  Future<Profile> getProfile()async{
-    await  FirebaseDatabase.instance.reference().child("Profile").child(board.uploader).once().then((ds){
-      return Profile.fromJSon(ds.value);
-    });
-    return Profile();
-  }
+  
   @override
   Widget build(BuildContext context) {
     print("----------");
@@ -93,7 +98,7 @@ String video_url;
       child:Padding(
     padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
       
-       child:FutureBuilder(
+       child:/*FutureBuilder(
          future:getProfile(),
          builder: (context, snapshot){
            
@@ -106,9 +111,22 @@ String video_url;
                       child: Container()
                       ),*/
                     );
-          else {
-             var _currentProfile=new Profile.fromJSon(snapshot.data.snapshot.value);
-            return
+          else if(snapshot.data==null){
+            return new Container(
+                      height: 300,
+                      color: Colors.black26,
+                      /*child: Shimmer.fromColors(
+                      baseColor: Colors.black26,
+                      highlightColor: Colors.black12,
+                      child: Container()
+                      ),*/
+                    );
+          }
+          else{
+            print("here::");
+            print(snapshot.data);
+             Profile currentProfile=snapshot.data;
+            return*/
        Column(
          mainAxisAlignment: MainAxisAlignment.start,
          children: <Widget>[
@@ -133,8 +151,9 @@ String video_url;
               ]),
            ListTile(
              contentPadding: EdgeInsets.only(top:5),
-             leading: _currentProfile.image!= ""?CacheImage.firebase(
-                    path: _currentProfile!=null?_currentProfile.image:"",
+             leading: currentProfile!=null?
+             currentProfile.image!= ""?CacheImage.firebase(
+                    path: currentProfile!=null?currentProfile.image:"",
                     fit: BoxFit.cover,
                     width: 30,
                     height: 30,
@@ -167,18 +186,28 @@ String video_url;
                         ),
                         ),
                       ),
-                    ),
+                    ):new CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      child: new Center(
+                        child: new Text("",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+
+
+                        )))),
+                       
              title: Wrap(
                children: <Widget>[
                  Text(
-                   _currentProfile!=null?_currentProfile.first_name:"",
+                   currentProfile!=null?currentProfile.first_name:"",
                      style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold
                   ),
                  ),
                  Text(
-                  " ~${_currentProfile!=null?_currentProfile.email+"":""}",
+                  " ~${currentProfile!=null?currentProfile.email+"":""}",
                    style:TextStyle(color: Colors.grey,fontSize: 10),
                  )
                 
@@ -225,10 +254,12 @@ String video_url;
          board.type=="Image"?
          Expanded(
            child:Container(
-             child:CacheImage.firebase(
-                    path: board.image,
+             /*child:FadeInImage(
+                   
                     fit: BoxFit.cover,
-                    placeholder: new Container(
+                    image: NetworkImage(board.image),
+                    placeholder:AssetImage('assets/loader1.png')
+                     new Container(
         
                       child: Shimmer.fromColors(
                       baseColor: Colors.white60,
@@ -236,7 +267,8 @@ String video_url;
                       child: Container()
                       ),
                     )
-             ),
+
+             ),*/
            ) ,
          ):
          board.type=="Video"?
@@ -408,9 +440,9 @@ String video_url;
 
          ]
          
-       );
-      }
-       }) ,
+       )
+      
+        
     )
     );
   }

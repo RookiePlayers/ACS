@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:acs_app/AUTHENTICATION/REGISTER/UI/main.dart';
 import 'package:acs_app/DATABASE/Auth/auth.dart';
 import 'package:acs_app/DATABASE/Auth/auth_provider.dart';
@@ -5,6 +7,8 @@ import 'package:acs_app/DATABASE/Auth/root_page.dart';
 import 'package:acs_app/NavigationControl.dart';
 import 'package:acs_app/Settings/Setting.dart';
 import 'package:flutter/material.dart';
+
+import 'DATABASE/Auth/registerDB.dart';
 
 void main() => runApp(MyApp());
 
@@ -161,6 +165,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     }
   }
+  
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -168,7 +173,9 @@ class _SplashScreenState extends State<SplashScreen>
       body: new Stack(
         children: <Widget>[
           
-          Center(child:  Column(
+          Center(child:  
+          
+          Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children:<Widget>[

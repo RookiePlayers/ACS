@@ -10,18 +10,20 @@ import 'package:uuid/uuid.dart';
 import '../../../NavigationControl.dart';
 class UploadGif extends StatefulWidget {
   final Profile profile;
+  final Profile me;
 
-  UploadGif({Key key,this.profile}) : super(key: key);
+  UploadGif({Key key,this.profile,this.me}) : super(key: key);
 
-  _UploadGifState createState() => _UploadGifState(profile: profile);
+  _UploadGifState createState() => _UploadGifState(profile: profile,me:me);
 }
 
 class _UploadGifState extends State<UploadGif> {
 final Profile profile;
+final Profile me;
  MessageBoard newPost;
   String gifUrl="";
  TextEditingController _title=new TextEditingController();
-_UploadGifState({this.profile});
+_UploadGifState({this.profile,this.me});
  @override
  void initState() { 
    super.initState();

@@ -15,165 +15,29 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cache_image/cache_image.dart';
 
+import 'map.dart';
+
 class Homepage extends StatefulWidget {
   final VoidCallback onSignedOut;
+  final Profile profile;
+  final Profile me;
    final Setting setting;
-  Homepage({Key key,this.onSignedOut,this.setting}) : super(key: key);
+  Homepage({Key key,this.onSignedOut,this.setting,this.profile,this.me}) : super(key: key);
 
-  _HomepageState createState() => _HomepageState(setting:setting);
+  _HomepageState createState() => _HomepageState(setting:setting,profile:profile,me:me);
 }
 
 class _HomepageState extends State<Homepage> with TickerProviderStateMixin{
   final VoidCallback onSignedOut;
    final Setting setting;
+   final Profile profile,me;
   PageController _pageController=new PageController(initialPage:2);
-  _HomepageState({this.onSignedOut,this.setting});
+  _HomepageState({this.onSignedOut,this.setting,this.profile,this.me});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(FontAwesomeIcons.plus),
-        backgroundColor: Colors.purple,
-        clipBehavior: Clip.antiAlias,
-        onPressed: (){
-
-                showModalBottomSheet<void>(context: context, builder: (BuildContext context) {
-              return Container(
-                height: 150,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: [0.1,4.2],
-                    colors: [Colors.blue,Colors.purple]
-                  )
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                
-                  child:Column(
-                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                       Text("Upload Type",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),textAlign: TextAlign.center,),
-                    
-                    Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white
-                            ),
-                            child: IconButton(
-                            icon: Icon(FontAwesomeIcons.microphone),
-                            onPressed: (){},
-                            splashColor: Colors.yellow[600],
-                            color: Colors.blue[700],
-                          ),
-                        ),
-                           
-                         Padding(
-                           padding: const EdgeInsets.all(10),
-                           child: Text("Voice Note",style:TextStyle( color: Colors.white,fontSize: 12),)
-                          )
-                        ],
-                      ),
-                      Column(
-                        children: <Widget>[
-                         Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white
-                            ),
-                            child: IconButton(
-                            icon: Icon(FontAwesomeIcons.video),
-                            onPressed: (){},
-                            splashColor: Colors.yellow[600],
-                            color: Colors.blue[700],
-                          ),
-                        ),
-                          Padding(
-                           padding: const EdgeInsets.all(10),
-                           child: Text("Video",style:TextStyle( color: Colors.white,fontSize: 12),)
-                          )
-                        ],
-                      ),
-                      Column(
-                        children: <Widget>[
-                         Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white
-                            ),
-                            child: IconButton(
-                            icon: Icon(FontAwesomeIcons.image),
-                            onPressed: (){},
-                            splashColor: Colors.yellow[600],
-                            color: Colors.blue[700],
-                          ),
-                        ),
-                         Padding(
-                           padding: const EdgeInsets.all(10),
-                           child: Text("Image",style:TextStyle( color: Colors.white,fontSize: 12),)
-                          )
-                        ],
-                      ),
-                      Column(
-                        children: <Widget>[
-                        Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white
-                            ),
-                            child: IconButton(
-                            icon: Icon(Icons.library_books),
-                            onPressed: (){NavigationControl(nextPage: UploadeText(profile: p)).navTo(context);},
-                            splashColor: Colors.yellow[600],
-                            color: Colors.blue[700],
-                          ),
-                        ),
-                         Padding(
-                           padding: const EdgeInsets.all(10),
-                           child: Text("Text",style:TextStyle( color: Colors.white,fontSize: 12),)
-                          )
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                        Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                                
-                            ),
-                            child: IconButton(
-                            icon: Icon(Icons.gif),
-                            onPressed: (){NavigationControl(nextPage: UploadGif(profile: p)).navTo(context);},
-                        
-                            splashColor: Colors.yellow[600],
-                            color: Colors.blue[700],
-                          ),
-                        ),
-                          Padding(
-                           padding: const EdgeInsets.all(10),
-                           child: Text("Gif",style:TextStyle( color: Colors.white,fontSize: 12),)
-                          )
-                        ],
-                      )
-                    ],
-                  )
-                
-                ])
-                ),
-              );
-              });
-        },
-      ),
-      body:NestedScrollView(
+      body:
+     NestedScrollView(
         headerSliverBuilder: (BuildContext context, isScrolled){
           return <Widget>[
             SliverAppBar(
@@ -211,7 +75,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin{
                         ),
                         Padding(
                           padding: const EdgeInsets.all(0),
-                        child: Text(p!=null?p.instagram!=""?p.instagram:"--":"--",style: TextStyle(color: Colors.white)),
+                        child: Text(profile.instagram!=null?profile.instagram!=""?profile.instagram:"--":"--",style: TextStyle(color: Colors.white)),
                         ),
 
 
@@ -227,7 +91,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin{
                         ),
                         Padding(
                           padding: const EdgeInsets.all(0),
-                        child: Text(p!=null?p.snapchat!=""?p.snapchat:"--":"--",style: TextStyle(color: Colors.white)),
+                        child: Text(profile.snapchat!=null?profile.snapchat!=""?profile.snapchat:"--":"--",style: TextStyle(color: Colors.white)),
                         ),
 
 
@@ -243,7 +107,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin{
                         ),
                         Padding(
                           padding: const EdgeInsets.all(0),
-                        child: Text(p!=null?p.facebook!=""?p.facebook:"--":"--",style: TextStyle(color: Colors.white)),
+                        child: Text(profile.facebook!=null?profile.facebook!=""?profile.facebook:"--":"--",style: TextStyle(color: Colors.white)),
                         ),
 
 
@@ -259,7 +123,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin{
                          ),
                          Padding(
                            padding: const EdgeInsets.all(0),
-                        child: Text(p!=null?p.twitter!=""?p.twitter:"--":"--",style: TextStyle(color: Colors.white)),
+                        child: Text(profile.twitter!=null?profile.twitter:"--",style: TextStyle(color: Colors.white)),
                         ),
 
 
@@ -279,8 +143,10 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin{
                            
                       
                     ),
-                    child: p!=null?p.image!=""?CacheImage.firebase(
-                    path: p.image,
+                    child: profile!=null?
+                    profile.image!=""?
+                    CacheImage.firebase(
+                    path: profile.image,
                     fit: BoxFit.cover,
                     width: 100,
                     height: 100,
@@ -292,7 +158,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin{
                     placeholder: new CircleAvatar(
                       
                       child: new Center(
-                        child: new Text(p!=null?"${p.first_name.length>1?p.first_name.substring(0,1).toUpperCase():""+p.last_name!=null?p.last_name.length>1?p.last_name.substring(0,1).toUpperCase():"":""}":"",
+                        child: new Text(profile!=null?"${profile.first_name.length>1?profile.first_name.substring(0,1).toUpperCase():""+profile.last_name!=null?profile.last_name.length>1?profile.last_name.substring(0,1).toUpperCase():"":""}":"",
                         style: TextStyle(
                           fontSize: 42,
                           fontWeight: FontWeight.bold,
@@ -305,7 +171,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin{
                   ):new CircleAvatar(
                       
                       child: new Center(
-                        child: new Text(p!=null?"${p.first_name.substring(0,1).toUpperCase()}"+" ${p.last_name!=null?p.last_name.substring(0,1).toUpperCase():""}":"",
+                        child: new Text(profile!=null?"${profile.first_name.substring(0,1).toUpperCase()}"+" ${profile.last_name!=null?profile.last_name.substring(0,1).toUpperCase():""}":"",
                         style: TextStyle(
                           fontSize: 42,
                           fontWeight: FontWeight.bold,
@@ -314,11 +180,11 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin{
                         ),
                         ),
                       ),
-                    )
-                    :new CircleAvatar(
+                    ):
+                 new CircleAvatar(
                       
                       child: new Center(
-                        child: new Text(p!=null?"${p.first_name.substring(0,1).toUpperCase()}+" "+${p.last_name!=null?p.last_name.substring(0,1).toUpperCase():""}":"",
+                        child: new Text(profile!=null?"${profile.first_name.substring(0,1).toUpperCase()}"+" ${profile.last_name!=null?profile.last_name.substring(0,1).toUpperCase():""}":"",
                         style: TextStyle(
                           fontSize: 42,
                           fontWeight: FontWeight.bold,
@@ -333,7 +199,7 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin{
                 ),
                 Padding(
                   padding: EdgeInsets.all(1),
-                  child: Text(p!=null?"${p.first_name.toUpperCase()} | ${p.id}":"",style: TextStyle(fontSize: 16,fontFamily: "Helvetica",color: Colors.white,fontWeight: FontWeight.bold),)
+                  child: Text(profile!=null?"${profile.first_name.toUpperCase()} | ${profile.id}":"",style: TextStyle(fontSize: 16,fontFamily: "Helvetica",color: Colors.white,fontWeight: FontWeight.bold),)
                 ),
                 
                   
@@ -378,9 +244,9 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin{
                 Text("Messages")
               ],
             ),
-             p!=null?Location(profile: p,):Center(child:CircularProgressIndicator()),
+             profile!=null?MapLocator(profile: profile,):Center(child:CircularProgressIndicator()),
             
-            p!=null?MessageBoardUI():Center(child:CircularProgressIndicator()),
+            profile!=null?MessageBoardUI(profile:profile):Center(child:CircularProgressIndicator()),
                 
             Column(
                mainAxisAlignment: MainAxisAlignment.center,
@@ -403,7 +269,28 @@ class _HomepageState extends State<Homepage> with TickerProviderStateMixin{
     ));
     //p==null?Container():WelcomeSplashScreen(profile: p);
   }
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  
+  
+  @override
+  void initState() { 
+    _pageController=new PageController(initialPage:2);
+  /*   FirebaseAuth.instance.currentUser().then((user){
+     
+         FirebaseDatabase.instance.reference().child("Profile")
+          .child(user.uid).onChildAdded.listen((ds){
+              print(ds.snapshot.value['course']);
+             
+                setState(() {
+                             p=Profile.fromSnapshot(ds.snapshot);
+                             p.uid=user.uid;
+                             print(">>>$p");
+                });
+          });
+     
+  
+   });*/
+  }
+ final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   
   
 GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -418,7 +305,6 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
 
 );
   GoogleSignInAccount _currentUser;
-
    Future<void> signOut([BuildContext c]) async {
     print("*************");
     print(c);
@@ -426,31 +312,6 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
     _googleSignIn.signOut();
     return _firebaseAuth.signOut();
   }
- 
-
-  
-  
-  Profile p;
-  @override
-  void initState() { 
-    _pageController=new PageController(initialPage:2);
-     FirebaseAuth.instance.currentUser().then((user){
-     
-         FirebaseDatabase.instance.reference().child("Profile")
-          .child(user.uid).onChildAdded.listen((ds){
-              print(ds.snapshot.value['course']);
-             
-                setState(() {
-                             p=Profile.fromSnapshot(ds.snapshot);
-                             p.uid=user.uid;
-                             print(">>>$p");
-                });
-          });
-     
-  
-   });
-  }
-
   void _signOut(BuildContext context) async {
     try {
       print("------");

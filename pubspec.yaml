@@ -44,6 +44,8 @@ dependencies:
   googleapis:
   location:
   googleapis_auth:
+  cached_network_image:
+ 
 
 dev_dependencies:
   flutter_test:

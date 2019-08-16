@@ -11,18 +11,20 @@ import 'package:shimmer/shimmer.dart';
 import 'package:uuid/uuid.dart';
 class UploadeText extends StatefulWidget {
   final Profile profile;
-  UploadeText({Key key,this.profile}) : super(key: key);
+  final Profile me;
+  UploadeText({Key key,this.profile,this.me}) : super(key: key);
 
-  _UploadeTextState createState() => _UploadeTextState(profile:profile);
+  _UploadeTextState createState() => _UploadeTextState(profile:profile,me:me);
 }
 
 class _UploadeTextState extends State<UploadeText> {
   final Profile profile;
+  final Profile me;
   TextEditingController _title=TextEditingController();
     TextEditingController _message=TextEditingController();
     MessageBoard newPost;
 
-  _UploadeTextState({this.profile});
+  _UploadeTextState({this.profile,this.me});
   
   @override
   void initState() { 

@@ -32,6 +32,7 @@ class Profile{
   int paid=0;
   bool single=true;
   bool confirmed=false;
+  bool online=false;
   List<String> friends=[];
   Profile({
     this.uid,
@@ -57,7 +58,8 @@ class Profile{
     this.phone,
     this.snapchat,
     this.twitter,
-    this.url
+    this.url,
+    this.online
   });
   Profile.fromSnapshot(DataSnapshot s){
   id=s.value['id'];
@@ -83,6 +85,7 @@ class Profile{
   snapchat=s.value['snapchat'];
   twitter=s.value['twitter'];
   url=s.value['url'];
+  online=s.value['online'];
  
 
   }
@@ -111,6 +114,33 @@ class Profile{
   twitter=s['twitter'];
   url=s['url'];
   }
+   Profile.fromJSON(dynamic s){
+     print(s);
+  id=s['id'];
+  bio=s['bio'];
+  country=s['country'];
+  course=s['course'];
+  degree=s['degree'];
+  dob=s['dob'];
+  email=s['email'];
+  first_name=s['first_name'];
+  last_name=s['last_name'];
+  gender=s['gender'];
+  image=s['image'];
+  loginWithId=s['loginWithId'];
+  single=s['single'];
+  year=s['year'];
+  confirmed=s['confirmed'];
+  friends=s['friends'];
+  facebook=s['facebook'];
+  instagram=s['Instagram'];
+  paid=s['paid'];
+  phone=s['phone'];
+  snapchat=s['snapchat'];
+  twitter=s['twitter'];
+  url=s['url'];
+  //online=s.value['online'];
+  }
   toJson(){
     return{
       'id':id,
@@ -135,7 +165,8 @@ class Profile{
       'phone':phone,
       'snapchat':snapchat,
       'twitter':twitter,
-      'url':url
+      'url':url,
+      'online':online
     };
   }
   @override
@@ -160,6 +191,7 @@ class ProfileDB{
 .child(uid)
 .once().then((DataSnapshot snapshot){
   Map<dynamic, dynamic> values = snapshot.value;
+  print(snapshot.value);
     p= Profile.fromSnapshot(snapshot);
     p.uid=uid;
     return p;
@@ -258,7 +290,7 @@ class _WelcomeSplashScreenState extends State<WelcomeSplashScreen>
   startTime() async {
  
       Future.delayed(Duration(seconds: 10)).then((n){
-        NavigationControl(nextPage: Homepage()).replaceWith(context);
+        NavigationControl(nextPage: Homepage(profile:profile)).replaceWith(context);
       });//});
   }
 
